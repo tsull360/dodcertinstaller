@@ -1,10 +1,13 @@
 #!/bin/bash
 
 # Name: OSCertInstaller-OSX.sh
+# Usage: sudo ./OSCertInstallScript-MacOS.sh
 # Version: 1.0
 # Author: Tim Sullivan
 # Info: Bash script for installing DoD root certificates onto an Apple Mac.
-#       Tested on Apple Silicon and Intel based Big Sur Mac's.
+#       Tested on Apple Silicon and Intel based Big Sur Mac's. Due to 
+#       limitations I'm not aware of how to work around, each cert
+#       prompts for permissions to be added to the keychain.
 
 echo "DoD Certificate Installer Script"
 
@@ -24,7 +27,7 @@ unzip -u -q DoDCerts.zip
 
 # Converting certs into workable format, extracting from supplied p7b format to cer format, then to
 # individual cert files.
-for filename in /tmp/certs/certificates_pkcs7_v5_13_dod/*.p7b; do
+for filename in /tmp/certs/Certificates_PKCS7_v5_*_DoD/*.p7b; do
     echo "Preparing certificates from the following file: $filename"
     #openssl pkcs7 -inform PEM -outform PEM -in $filename -print_certs > /tmp/certs/certcat.cer
     openssl pkcs7 -in $filename -inform der -print_certs > /tmp/certs/certcat.cer
@@ -43,7 +46,7 @@ done
 # Loop through the collection of certificates. Installing each one into the system root store
 for CertName in /tmp/certs/fixed/*Root*.cer; do
     echo "Importing the following cert info the System Keychain: $CertName"
-    security add-trusted-cert -d -r trustAsRoot -k /Library/Keychains/System.keychain "$CertName"
+    security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "$CertName"
 done
 
 for CertName in /tmp/certs/fixed/*CA-*.cer; do

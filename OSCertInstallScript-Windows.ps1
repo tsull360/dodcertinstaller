@@ -104,7 +104,7 @@ If ($DLState -notlike "Error"){
 
 # Call function to extract certs from cert bundle
 If ($ZipState -notlike "Error"){
-    $CertFile = (Get-ChildItem -Path $CertFiles\certificates_pkcs7*\certificates_pkcs*_dod_der.p7b).FullName
+    $CertFile = (Get-ChildItem -Path $CertFiles\Certificates_PKCS7*\certificates_pkcs*_dod.der.p7b).FullName
     Write-Verbose "Certificate File: $CertFile"
     Expand-Certs -certfile $CertFile
     Write-Output "Certificates extracted from bundle!"
@@ -128,5 +128,5 @@ Foreach ($IntCert in $NonRoots){
     $Impstatus = Import-Certificate -FilePath $($IntCert.FullName) -CertStoreLocation $CompIntStore
     Write-Output "Intermediate certs installed!"
 }
-Remove-Item -Path $CertFiles -Force -Recurse
+#Remove-Item -Path $CertFiles -Force -Recurse
 Write-Output "Script complete!"
