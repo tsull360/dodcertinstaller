@@ -12,7 +12,7 @@
 
 .NOTES
 
-    Author: Tim Sullivan
+    Author: Tim S
     Version: 1.0
     Date: 10/04/2021
     Name: OSCertInstallScript-Windows.ps1

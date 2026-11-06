@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # Name: OSCertInstaller-OSX.sh
-# Usage: sudo ./OSCertInstallScript-MacOS.sh
-# Version: 1.0
-# Author: Tim Sullivan
-# Info: Bash script for installing DoD root certificates onto an Apple Mac.
-#       Tested on Apple Silicon and Intel based Big Sur Mac's. Due to 
-#       limitations I'm not aware of how to work around, each cert
-#       prompts for permissions to be added to the keychain.
+# Usage: ./OSCertInstallScript-MacOS.sh
+# Version: 1.1
+# Author: Tim S
+# Info: Bash script for installing DoD root certificates into the current user's login keychain on macOS.
+#       This avoids the repeated admin password prompts that occur when importing into the System keychain.
 
 echo "DoD Certificate Installer Script"
+
+KEYCHAIN="${HOME}/Library/Keychains/login.keychain-db"
 
 # Preparing needed working folders
 {
@@ -45,13 +45,13 @@ done
 
 # Loop through the collection of certificates. Installing each one into the system root store
 for CertName in /tmp/certs/fixed/*Root*.cer; do
-    echo "Importing the following cert info the System Keychain: $CertName"
-    security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "$CertName"
+    echo "Importing the following cert into the login keychain: $CertName"
+    security add-trusted-cert -d -r trustRoot -k "$KEYCHAIN" "$CertName"
 done
 
 for CertName in /tmp/certs/fixed/*CA-*.cer; do
-    echo "Importing the following cert info the System Keychain: $CertName"
-    security add-trusted-cert -d -r trustAsRoot -k /Library/Keychains/System.keychain "$CertName"
+    echo "Importing the following cert into the login keychain: $CertName"
+    security add-trusted-cert -d -r trustAsRoot -k "$KEYCHAIN" "$CertName"
 done
 
 echo "Cleaning up working folders"
